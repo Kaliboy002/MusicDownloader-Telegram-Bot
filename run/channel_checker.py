@@ -7,7 +7,7 @@ from utils import db
 
 async def is_user_in_channel(user_id, channel_usernames=None):
     if channel_usernames is None:
-        channel_usernames = BotState.channel_usernames
+        channel_usernames = BotState.Kali_Linux_BOTS
     channels_user_is_not_in = []
 
     for channel_username in channel_usernames:
