@@ -4,9 +4,18 @@ FROM python:3.11-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Install FFmpeg
+# Install FFmpeg and other dependencies for Selenium (if necessary)
 RUN apt-get update && \
-    apt-get install -y ffmpeg
+    apt-get install -y ffmpeg \
+    wget \
+    libx11-dev \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libnss3 \
+    libxss1 \
+    libappindicator3-1 \
+    libindicator7 \
+    chromium-driver
 
 # Install dependencies from requirements.txt
 COPY requirements.txt /app/
