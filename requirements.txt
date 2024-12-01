@@ -10,5 +10,5 @@ aiosqlite
 wget
 FastTelethonhelper
 lxml
-webdriver_manager
+webdriver-manager
 selenium
