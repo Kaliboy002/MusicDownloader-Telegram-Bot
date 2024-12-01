@@ -12,5 +12,3 @@ FastTelethonhelper
 lxml
 webdriver-manager
 selenium
-pydub
-ffmpeg-python
