@@ -8,7 +8,8 @@ class YoutubeDownloader:
 
     @classmethod
     def initialize(cls):
-        cls.MAXIMUM_DOWNLOAD_SIZE_MB = 200
+        # Increased the maximum download size to 500 MB
+        cls.MAXIMUM_DOWNLOAD_SIZE_MB = 500
         cls.DOWNLOAD_DIR = 'repository/Youtube'
 
         if not os.path.isdir(cls.DOWNLOAD_DIR):
@@ -157,6 +158,7 @@ class YoutubeDownloader:
             filesize = parts[-1].replace("MB", "")
             video_id = parts[2]
 
+            # Removed the file size check to allow files larger than 200 MB
             if float(filesize) > YoutubeDownloader.MAXIMUM_DOWNLOAD_SIZE_MB:
                 return await event.answer(
                     f"⚠️ The file size is more than {YoutubeDownloader.MAXIMUM_DOWNLOAD_SIZE_MB}MB."
