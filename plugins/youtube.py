@@ -3,7 +3,6 @@ from utils import os, InputMediaUploadedDocument, DocumentAttributeVideo, fast_u
 from utils import DocumentAttributeAudio, DownloadError, WebpageMediaEmptyError
 from run import Button, Buttons
 
-
 class YoutubeDownloader:
 
     @classmethod
@@ -14,7 +13,6 @@ class YoutubeDownloader:
 
         if not os.path.isdir(cls.DOWNLOAD_DIR):
             os.mkdir(cls.DOWNLOAD_DIR)
-
 
     @lru_cache(maxsize=128)  # Cache the last 128 screenshots
     def get_file_path(url, format_id, extension):
@@ -93,19 +91,11 @@ class YoutubeDownloader:
         video_formats = [f for f in formats if f.get('vcodec') != 'none' and f.get('acodec') != 'none']
         audio_formats = [f for f in formats if f.get('acodec') != 'none' and f.get('vcodec') == 'none']
 
-        video_buttons = []
-        counter = 0
-        for f in reversed(video_formats):
-            extension = f['ext']
-            resolution = f.get('resolution')
-            filesize = f.get('filesize') if f.get('filesize') is not None else f.get('filesize_approx')
-            if resolution and filesize and counter < 5:
-                filesize = f"{filesize / 1024 / 1024:.2f} MB"
-                button_data = f"yt/dl/{video_id}/{extension}/{f['format_id']}/{filesize}"
-                button = [Button.inline(f"{extension} - {resolution} - {filesize}", data=button_data)]
-                if not button in video_buttons:
-                    video_buttons.append(button)
-                    counter += 1
+        # MP4 video format sizes
+        mp4_formats = [
+            {'resolution': '1080p', 'size': '200MB', 'format_id': '22'},  # Full HD
+            {'resolution': '720p', 'size': '100MB', 'format_id': '18'},  # HD
+        ]
 
         audio_buttons = []
         counter = 0
@@ -121,6 +111,18 @@ class YoutubeDownloader:
                     audio_buttons.append(button)
                     counter += 1
 
+        # MP4 video size options
+        video_buttons = []
+        counter = 0
+        for format in mp4_formats:
+            resolution = format['resolution']
+            size = format['size']
+            format_id = format['format_id']
+            button_data = f"yt/dl/{video_id}/mp4/{format_id}/{size}"
+            button = [Button.inline(f"MP4 - {resolution} - {size}", data=button_data)]
+            video_buttons.append(button)
+            counter += 1
+
         buttons = video_buttons + audio_buttons
         buttons.append(Buttons.cancel_button)
 
@@ -132,16 +134,15 @@ class YoutubeDownloader:
         try:
             await client.send_file(
                 event.chat_id,
-               file=thumbnail,
-               caption="Select a format to download:",
-               buttons=buttons
-               )
+                file=thumbnail,
+                caption="Select a format to download:",
+                buttons=buttons
+            )
         except WebpageMediaEmptyError:
             await event.respond(
-               "Select a format to download:",
-               buttons=buttons
-               )
-
+                "Select a format to download:",
+                buttons=buttons
+            )
 
     @staticmethod
     async def download_and_send_yt_file(client, event):
@@ -161,8 +162,8 @@ class YoutubeDownloader:
             # Removed the file size check to allow files larger than 200 MB
             if float(filesize) > YoutubeDownloader.MAXIMUM_DOWNLOAD_SIZE_MB:
                 return await event.answer(
-                    f"⚠️ The file size is more than {YoutubeDownloader.MAXIMUM_DOWNLOAD_SIZE_MB}MB."
-                    , alert=True)
+                    f"⚠️ The file size is more than {YoutubeDownloader.MAXIMUM_DOWNLOAD_SIZE_MB}MB.",
+                    alert=True)
 
             await db.set_file_processing_flag(user_id, is_processing=True)
 
