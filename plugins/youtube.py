@@ -8,10 +8,12 @@ class YoutubeDownloader:
 
     @classmethod
     def initialize(cls):
+        cls.MAXIMUM_DOWNLOAD_SIZE_MB = 200
         cls.DOWNLOAD_DIR = 'repository/Youtube'
 
         if not os.path.isdir(cls.DOWNLOAD_DIR):
             os.mkdir(cls.DOWNLOAD_DIR)
+
 
     @lru_cache(maxsize=128)  # Cache the last 128 screenshots
     def get_file_path(url, format_id, extension):
