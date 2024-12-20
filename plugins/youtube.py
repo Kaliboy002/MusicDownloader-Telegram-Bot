@@ -7,7 +7,7 @@ class YoutubeDownloader:
 
     @classmethod
     def initialize(cls):
-        # Increased the maximum download size to 500 MB
+        # Increased the maximum download size to 500 MBs
         cls.MAXIMUM_DOWNLOAD_SIZE_MB = 500
         cls.DOWNLOAD_DIR = 'repository/Youtube'
 
