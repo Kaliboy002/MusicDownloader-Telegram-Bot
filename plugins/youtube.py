@@ -91,15 +91,24 @@ class YoutubeDownloader:
         video_formats = [f for f in formats if f.get('vcodec') != 'none' and f.get('acodec') != 'none']
         audio_formats = [f for f in formats if f.get('acodec') != 'none' and f.get('vcodec') == 'none']
 
-        # MP4 video format sizes
-        mp4_formats = [
-            {'resolution': '1080p', 'size': '200MB', 'format_id': '22'},  # Full HD
-            {'resolution': '720p', 'size': '100MB', 'format_id': '18'},  # HD
-        ]
+        # MP4 video size options
+        video_buttons = []
+        counter = 0
+        for f in video_formats:
+            resolution = f.get('resolution', 'Unknown')
+            filesize = f.get('filesize') or f.get('filesize_approx')
+            if filesize:
+                filesize_mb = filesize / 1024 / 1024  # Convert to MB
+                filesize_str = f"{filesize_mb:.2f} MB"
+                button_data = f"yt/dl/{video_id}/{f['ext']}/{f['format_id']}/{filesize_str}"
+                button = [Button.inline(f"MP4 - {resolution} - {filesize_str}", data=button_data)]
+                video_buttons.append(button)
+                counter += 1
 
+        # Audio options
         audio_buttons = []
         counter = 0
-        for f in reversed(audio_formats):
+        for f in audio_formats:
             extension = f['ext']
             resolution = f.get('resolution')
             filesize = f.get('filesize') if f.get('filesize') is not None else f.get('filesize_approx')
@@ -110,18 +119,6 @@ class YoutubeDownloader:
                 if not button in audio_buttons:
                     audio_buttons.append(button)
                     counter += 1
-
-        # MP4 video size options
-        video_buttons = []
-        counter = 0
-        for format in mp4_formats:
-            resolution = format['resolution']
-            size = format['size']
-            format_id = format['format_id']
-            button_data = f"yt/dl/{video_id}/mp4/{format_id}/{size}"
-            button = [Button.inline(f"MP4 - {resolution} - {size}", data=button_data)]
-            video_buttons.append(button)
-            counter += 1
 
         buttons = video_buttons + audio_buttons
         buttons.append(Buttons.cancel_button)
