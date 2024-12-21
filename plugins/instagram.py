@@ -26,7 +26,7 @@ class Insta:
 
     @staticmethod
     def extract_url(text) -> str | None:
-        pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories|p)\/[\w-]+\/?(?:\?[^\s]+)?(?:={1,2})?)'
+        pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories)\/[\w-]+\/?(?:\?[^\s]+)?(?:={1,2})?)'
         match = re.search(pattern, text)
         if match:
             return match.group(0)
@@ -61,16 +61,21 @@ class Insta:
         try:
             if content_type == 'reel':
                 await Insta.download_reel(client, event, link)
+                await start_message.delete()
+                return True
             elif content_type == 'post':
                 await Insta.download_post(client, event, link)
+                await start_message.delete()
+                return True
             elif content_type == 'story':
                 await Insta.download_story(client, event, link)
+                await start_message.delete()
+                return True
             else:
                 await event.reply(
-                    "Sorry, unable to find the requested content. Please ensure it's publicly available."
-                )
-            await start_message.delete()
-            return True
+                    "Sorry, unable to find the requested content. Please ensure it's publicly available.")
+                await start_message.delete()
+                return True
         except Exception as e:
             await event.reply(f"Error occurred: {e}")
             await start_message.delete()
@@ -79,6 +84,7 @@ class Insta:
     @staticmethod
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
+
         start_message = await event.respond("Processing your Instagram link ....")
         try:
             if "ddinstagram.com" in link:
@@ -86,7 +92,7 @@ class Insta:
             link = link.replace("instagram.com", "ddinstagram.com")
             return await Insta.download_content(client, event, start_message, link)
         except:
-            return await Insta.download_content(client, event, start_message, link)
+            await Insta.download_content(client, event, start_message, link)
 
     @staticmethod
     async def download_reel(client, event, link):
