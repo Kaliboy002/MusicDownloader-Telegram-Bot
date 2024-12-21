@@ -6,12 +6,19 @@ from telethon.errors.rpcerrorlist import MessageNotModifiedError
 
 class BotMessageHandler:
     start_message = """
-Welcome to your **Music Downloader!** 🎧
+🇺🇲 **| Welcome to Video Downloader **🎬
 
-Send me the name of a song or artist, and I'll find and send you the downloadable track. 🎶
+📌 You can easily download **Instagram** and **YouTube** videos and reels in high speed and quality⚡
 
-To see what I can do, type: /help
-Or simply click the Instructions button below. 👇
+🖇️ **Just simply send me the link or url of that **🙂
+
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+
+**🇮🇷 | به ربات دانلودر ویدیو خوش آمدید 🎬**
+
+📌 شما به خیلی آسانی میتوانید ویدیو و فیلم های کوتاه را از** اینستاگرام و یوتیوب **با سرعت و کیفیت بالا دانلود نماید⚡
+
+**🖇️ فقط کافیه لینک ویدیو مورد نظر را به من بفرستید 🙂**
 """
 
     instruction_message = """
