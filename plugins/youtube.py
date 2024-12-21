@@ -90,7 +90,7 @@ class YoutubeDownloader:
             if resolution and filesize and counter < 1:  # Only 1 option for video
                 filesize = f"{filesize / 1024 / 1024:.2f} MB"
                 button_data = f"yt/dl/{video_id}/{extension}/{f['format_id']}/{filesize}"
-                button = [Button.inline(f"{extension} - {resolution} - {filesize}", data=button_data)]
+                button = [Button.inline(f"🎬 {extension} - {resolution} - {filesize}", data=button_data)]
                 if not button in video_buttons:
                     video_buttons.append(button)
                     counter += 1
@@ -104,7 +104,7 @@ class YoutubeDownloader:
             if resolution and filesize and counter < 1:  # Only 1 option for audio
                 filesize = f"{filesize / 1024 / 1024:.2f} MB"
                 button_data = f"yt/dl/{video_id}/{extension}/{f['format_id']}/{filesize}"
-                button = [Button.inline(f"{extension} - {resolution} - {filesize}", data=button_data)]
+                button = [Button.inline(f"🎧 {extension} - {resolution} - {filesize}", data=button_data)]
                 if not button in audio_buttons:
                     audio_buttons.append(button)
                     counter += 1
@@ -122,8 +122,7 @@ class YoutubeDownloader:
                 event.chat_id,
                file=thumbnail,
                caption="""🇺🇲 Select a format to download it:
-┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-🇮🇷 :فرمت برای دانلود رو انتخاب کنید """,
+🇮🇷 فرمت برای دانلود رو انتخاب کنید : """,
                buttons=buttons
                )
         except WebpageMediaEmptyError:
