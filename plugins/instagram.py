@@ -45,7 +45,7 @@ class Insta:
             if pattern in text:
                 return content_type
 
-        return 'photo'  # Assume it's a photo if no specific content type matches
+        return None
 
     @staticmethod
     def is_publicly_available(url) -> bool:
@@ -64,18 +64,23 @@ class Insta:
         try:
             if content_type == 'reel':
                 await Insta.download_reel(client, event, link)
+                await start_message.delete()
+                return True
             elif content_type == 'post':
                 await Insta.download_post(client, event, link)
+                await start_message.delete()
+                return True
             elif content_type == 'story':
                 await Insta.download_story(client, event, link)
-            elif content_type == 'photo':
-                await Insta.download_photo(client, event, link)
+                await start_message.delete()
+                return True
             else:
-                await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
-            await start_message.delete()
-            return True
-        except Exception as e:
-            await event.reply(f"An error occurred: {str(e)}")
+                await event.reply(
+                    "Sorry, unable to find the requested content. Please ensure it's publicly available.")
+                await start_message.delete()
+                return True
+        except:
+            await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
             await start_message.delete()
             return False
 
@@ -90,7 +95,7 @@ class Insta:
             link = link.replace("instagram.com", "ddinstagram.com")
             return await Insta.download_content(client, event, start_message, link)
         except:
-            return await Insta.download_content(client, event, start_message, link)
+            await Insta.download_content(client, event, start_message, link)
 
     @staticmethod
     async def download_reel(client, event, link):
@@ -123,16 +128,6 @@ class Insta:
             await Insta.send_file(client, event, meta_tag[0])
         else:
             await event.reply("Oops, something went wrong")
-
-    @staticmethod
-    async def download_photo(client, event, link):
-        try:
-            response = requests.get(link, headers=Insta.headers)
-            soup = bs4.BeautifulSoup(response.text, 'html.parser')
-            photo_url = soup.find('meta', property='og:image')['content']
-            await Insta.send_file(client, event, photo_url)
-        except Exception:
-            await event.reply("Oops, unable to fetch the photo. Please try again.")
 
     @staticmethod
     async def get_meta_tag(link):
