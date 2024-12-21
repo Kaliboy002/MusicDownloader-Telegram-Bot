@@ -1,7 +1,6 @@
 from utils import bs4, wget
 from utils import asyncio, re, requests
 
-
 class Insta:
     @classmethod
     def initialize(cls):
@@ -51,7 +50,8 @@ class Insta:
         try:
             response = requests.get(url, headers=Insta.headers)
             return response.status_code == 200
-        except:
+        except Exception as e:
+            print(f"Error checking URL availability: {e}")
             return False
 
     @staticmethod
@@ -75,37 +75,38 @@ class Insta:
                     "Sorry, unable to find the requested content. Please ensure it's publicly available.")
                 await start_message.delete()
                 return True
-        except:
-            await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
+        except Exception as e:
+            await event.reply(f"Error: {e}")
             await start_message.delete()
             return False
 
     @staticmethod
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
-
-        start_message = await event.respond("Processing Your Instagram link ....")
+        start_message = await event.respond("Processing your Instagram link....")
         try:
             if "ddinstagram.com" in link:
-                raise Exception
+                raise Exception("Invalid domain.")
             link = link.replace("instagram.com", "ddinstagram.com")
             return await Insta.download_content(client, event, start_message, link)
-        except:
-            await Insta.download_content(client, event, start_message, link)
+        except Exception as e:
+            await event.reply(f"Error: {e}")
+            await start_message.delete()
 
     @staticmethod
     async def download_reel(client, event, link):
         try:
             meta_tag = await Insta.get_meta_tag(link)
-            content_value = f"https://ddinstagram.com{meta_tag['content']}"
-        except:
+            content_value = f"https://ddinstagram.com{meta_tag['content']}" if meta_tag else None
+        except Exception as e:
+            print(f"Error fetching reel: {e}")
             meta_tag = await Insta.search_saveig(link)
             content_value = meta_tag[0] if meta_tag else None
 
         if content_value:
             await Insta.send_file(client, event, content_value)
         else:
-            await event.reply("Oops, something went wrong")
+            await event.reply("Oops, something went wrong: No reel found.")
 
     @staticmethod
     async def download_post(client, event, link):
@@ -148,15 +149,20 @@ class Insta:
             )
             if response.ok:
                 res = response.json()
+                print(f"Search response: {res}")  # Debugging line
                 return re.findall(r'href="(https?://[^"]+)"', res['data'])
+            else:
+                print(f"Error fetching media: {response.status_code}")  # Debugging line
             return None
-        except Exception:
+        except Exception as e:
+            print(f"Error during search_saveig: {e}")  # Debugging line
             return None
 
     @staticmethod
     async def send_file(client, event, content_value):
         try:
             await client.send_file(event.chat_id, content_value, caption="Here's your Instagram content.")
-        except:
+        except Exception as e:
+            print(f"Error sending file: {e}")  # Debugging line
             fileoutput = wget.download(content_value)
             await client.send_file(event.chat_id, fileoutput, caption="Here's your Instagram content.")
