@@ -4,8 +4,7 @@ from run import Button
 
 
 class Buttons:
-    pass
-
+    main_menu_buttons = []
     back_button = Button.inline("<< Back To Main Menu", b"back")
 
     setting_button = [
