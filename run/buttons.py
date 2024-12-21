@@ -1,12 +1,12 @@
-
-
 from run import Button
 
 
 class Buttons:
     main_menu_buttons = [
-        [Button.inline("Instructions", b"instructions")]
+        [Button.inline("Instructions", b"instructions")],
     ]
+    back_button = Button.inline("<< Back To Main Menu", b"back")
+
     setting_button = [
         [Button.inline("Core", b"setting/core")],
         [Button.inline("Quality", b"setting/quality")],
@@ -31,6 +31,12 @@ class Buttons:
         [Button.inline("Broadcast To Specified Users Only", b"admin/broadcast/specified")],
         [Button.inline("Cancel", b"cancel")]
     ]
+
+    continue_button = [Button.inline("Continue", data='membership/continue')]
+
+    cancel_subscription_button_quite = [Button.inline("UnSubscribe", b"setting/subscription/cancel/quite")]
+
+    cancel_button = [Button.inline("Cancel", b"cancel")]
 
     continue_button = [Button.inline("Continue", data='membership/continue')]
 
