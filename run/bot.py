@@ -86,7 +86,7 @@ class Bot:
     @classmethod
     def initialize_buttons(cls):
         # Define buttons here but keep them hidden initially
-        cls.main_menu_buttons = Buttons.main_menu_buttons
+        cls.main_menu_butt = Buttons.main_menu_butt
         cls.back_button = Buttons.back_button
         cls.setting_button = Buttons.setting_button
         cls.back_button_to_setting = Buttons.back_button_to_setting
