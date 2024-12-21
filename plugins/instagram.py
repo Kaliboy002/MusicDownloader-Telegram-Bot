@@ -76,11 +76,15 @@ class Insta:
                 return True
             else:
                 await event.reply(
-                    "Sorry, unable to find the requested content. Please ensure it's publicly available.")
+                    "🇺🇲 | Sorry, unable to find the requested content. **Please ensure it is supported kinds of media**1 ❤️‍🩹🙃
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 | **ببخشید، محتوای درخواستی پیدا نشد. **لطفاً مطمئن شوید که نوع رسانه توسط ربات پشتیبانی می‌شود❤️‍🩹🙃")
                 await start_message.delete()
                 return True
         except:
-            await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
+            await event.reply("🇺🇲 | Sorry, unable to find the requested content. **Please ensure it is supported kinds of media** ❤️‍🩹🙃
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 | **ببخشید، محتوای درخواستی پیدا نشد.** لطفاً مطمئن شوید که نوع رسانه توسط ربات پشتیبانی می‌شود❤️‍🩹🙃")
             await start_message.delete()
             return False
 
@@ -88,7 +92,9 @@ class Insta:
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
 
-        start_message = await event.respond("Processing Your insta link ....")
+        start_message = await event.respond("🇺🇲 | **Processing your link ... 🔄🔗**
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 | **در حال پردازش لینک شما... **🔄🔗")
         try:
             if "ddinstagram.com" in link:
                 raise Exception
@@ -109,7 +115,9 @@ class Insta:
         if content_value:
             await Insta.send_file(client, event, content_value)
         else:
-            await event.reply("Oops, something went wrong")
+            await event.reply("🇺🇲 | Oops, something went wrong! 😬❌
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 | **اوه، مشکلی پیش آمد! 😬❌**")
 
     @staticmethod
     async def download_post(client, event, link):
@@ -119,7 +127,9 @@ class Insta:
                 await asyncio.sleep(1)
                 await Insta.send_file(client, event, meta)
         else:
-            await event.reply("Oops, something went wrong")
+            await event.reply("🇺🇲 | Oops, something went wrong! 😬❌
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 | **اوه، مشکلی پیش آمد! 😬❌**")
 
     @staticmethod
     async def download_story(client, event, link):
@@ -127,7 +137,9 @@ class Insta:
         if meta_tag:
             await Insta.send_file(client, event, meta_tag[0])
         else:
-            await event.reply("Oops, something went wrong")
+            await event.reply("🇺🇲 | Oops, something went wrong! 😬❌
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 | **اوه، مشکلی پیش آمد! 😬❌**")
 
     @staticmethod
     async def get_meta_tag(link):
@@ -147,8 +159,8 @@ class Insta:
     @staticmethod
     async def send_file(client, event, content_value):
         try:
-            await client.send_file(event.chat_id, content_value, caption="Here's your Instagram content")
+            await client.send_file(event.chat_id, content_value, caption="⚡Saved  ➣ @Kali")
         except:
             fileoutput = f"{str(content_value)}"
             downfile = wget.download(content_value, out=fileoutput)
-            await client.send_file(event.chat_id, fileoutput, caption="Here's your Instagram content")
+            await client.send_file(event.chat_id, fileoutput, caption="⚡Saved  ➣ @Kali")
