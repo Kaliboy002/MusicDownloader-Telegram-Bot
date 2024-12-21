@@ -105,8 +105,8 @@ class Bot:
             b"instructions": lambda e: asyncio.create_task(
                 BotMessageHandler.edit_message(e, Bot.instruction_message, buttons=Bot.back_button)),
             b"back": lambda e: asyncio.create_task(
-                BotMessageHandler.edit_message(e, f"Hey {e.sender.first_name}!👋\n {Bot.start_message}",
-                                               buttons=Bot.main_menu_button)),
+                BotMessageHandler.edit_message(e, f"Hey {e.sender.first_name}!👋\n {Bot.starts_message}",
+                                               buttons=Bot.main_menu_utt)),
             b"setting": lambda e: asyncio.create_task(
                 BotMessageHandler.edit_message(e, "Settings :", buttons=Bot.setting_button)),
             b"setting/back": lambda e: asyncio.create_task(
