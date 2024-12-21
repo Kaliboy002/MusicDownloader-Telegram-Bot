@@ -1,10 +1,12 @@
 from run import Bot
-from utils import asyncio
+import asyncio
 
 
 async def main():
+    # Initialize and run the bot
     await Bot.initialize()
     await Bot.run()
 
-
-asyncio.run(main())
+# Run the bot
+if __name__ == "__main__":
+    asyncio.run(main())
