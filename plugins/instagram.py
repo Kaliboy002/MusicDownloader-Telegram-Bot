@@ -12,51 +12,31 @@ class Insta:
             "Accept-Language": "en-US,en;q=0.5",
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             "X-Requested-With": "XMLHttpRequest",
-            "Content-Length": "99",
-            "Origin": "https://saveig.app",
             "Connection": "keep-alive",
-            "Referer": "https://saveig.app/en",
         }
 
     @staticmethod
     def is_instagram_url(text) -> bool:
-        pattern = r'(?:https?:\/\/)?(?:www\.)?(?:instagram\.com|instagr\.am)(?:\/(?:p|reel|tv|stories)\/(?:[^\s\/]+)|\/([\w-]+)(?:\/(?:[^\s\/]+))?)'
-        match = re.search(pattern, text)
-        return bool(match)
+        pattern = r'(?:https?:\/\/)?(?:www\.)?(?:instagram\.com|instagr\.am)(?:\/(?:p|reel|tv|stories|p)\/(?:[^\s\/]+))'
+        return bool(re.search(pattern, text))
 
     @staticmethod
     def extract_url(text) -> str | None:
-        pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories)\/[\w-]+\/?(?:\?[^\s]+)?(?:={1,2})?)'
+        pattern = r'(https?:\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/(?:p|reel|tv|stories)\/[\w-]+\/?)'
         match = re.search(pattern, text)
-        if match:
-            return match.group(0)
-        return None
+        return match.group(0) if match else None
 
     @staticmethod
     def determine_content_type(text) -> str:
-        content_types = {
-            '/p/': 'post',
-            '/reel/': 'reel',
-            '/tv': 'igtv',
-            '/stories/': 'story',
-        }
-
-        for pattern, content_type in content_types.items():
-            if pattern in text:
-                return content_type
-
+        if '/p/' in text:
+            return 'post'
+        elif '/reel/' in text:
+            return 'reel'
+        elif '/tv/' in text:
+            return 'igtv'
+        elif '/stories/' in text:
+            return 'story'
         return None
-
-    @staticmethod
-    def is_publicly_available(url) -> bool:
-        try:
-            response = requests.get(url, headers=Insta.headers)
-            if response.status_code == 200:
-                return True
-            else:
-                return False
-        except:
-            return False
 
     @staticmethod
     async def download_content(client, event, start_message, link) -> bool:
@@ -64,96 +44,73 @@ class Insta:
         try:
             if content_type == 'reel':
                 await Insta.download_reel(client, event, link)
-                await start_message.delete()
-                return True
             elif content_type == 'post':
                 await Insta.download_post(client, event, link)
-                await start_message.delete()
-                return True
             elif content_type == 'story':
                 await Insta.download_story(client, event, link)
-                await start_message.delete()
-                return True
             else:
-                await event.reply(
-                    "Sorry, unable to find the requested content. Please ensure it's publicly available.")
-                await start_message.delete()
-                return True
-        except:
-            await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
+                await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
+            await start_message.delete()
+            return True
+        except Exception as e:
+            await event.reply(f"Error: {e}")
             await start_message.delete()
             return False
 
     @staticmethod
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
+        if not link:
+            await event.reply("Invalid Instagram URL. Please try again.")
+            return False
 
-        start_message = await event.respond("Processing Your insta link ....")
-        try:
-            if "ddinstagram.com" in link:
-                raise Exception
-            link = link.replace("instagram.com", "ddinstagram.com")
-            return await Insta.download_content(client, event, start_message, link)
-        except:
-            await Insta.download_content(client, event, start_message, link)
+        start_message = await event.respond("Processing your Instagram link...")
+        return await Insta.download_content(client, event, start_message, link)
 
     @staticmethod
     async def download_reel(client, event, link):
-        try:
-            meta_tag = await Insta.get_meta_tag(link)
-            content_value = f"https://ddinstagram.com{meta_tag['content']}"
-        except:
-            meta_tag = await Insta.search_saveig(link)
-            content_value = meta_tag[0] if meta_tag else None
-
-        if content_value:
-            await Insta.send_file(client, event, content_value)
-        else:
-            await event.reply("Oops, something went wrong")
+        await Insta.download_media(client, event, link, "reel")
 
     @staticmethod
     async def download_post(client, event, link):
-        meta_tags = await Insta.search_saveig(link)
-        if meta_tags:
-            for meta in meta_tags[:-1]:
-                await asyncio.sleep(1)
-                await Insta.send_file(client, event, meta)
-        else:
-            await event.reply("Oops, something went wrong")
+        await Insta.download_media(client, event, link, "post")
 
     @staticmethod
     async def download_story(client, event, link):
+        await Insta.download_media(client, event, link, "story")
+
+    @staticmethod
+    async def download_media(client, event, link, media_type):
         try:
-            meta_tags = await Insta.search_saveig(link)
-            if meta_tags:
-                for meta in meta_tags:
+            media_links = Insta.extract_media_links(link)
+            if media_links:
+                for media_link in media_links:
                     await asyncio.sleep(1)
-                    await Insta.send_file(client, event, meta)
+                    await Insta.send_file(client, event, media_link)
             else:
-                await event.reply("No story content found or it's not publicly accessible.")
+                await event.reply(f"Unable to retrieve {media_type}. Please ensure the link is public.")
         except Exception as e:
-            await event.reply(f"Error downloading story: {e}")
+            await event.reply(f"Error downloading {media_type}: {e}")
 
     @staticmethod
-    async def get_meta_tag(link):
-        getdata = requests.get(link).text
-        soup = bs4.BeautifulSoup(getdata, 'html.parser')
-        return soup.find('meta', attrs={'property': 'og:video'})
-
-    @staticmethod
-    async def search_saveig(link):
-        meta_tag = requests.post("https://saveig.app/api/ajaxSearch", data={"q": link, "t": "media", "lang": "en"},
-                                 headers=Insta.headers)
-        if meta_tag.ok:
-            res = meta_tag.json()
-            return re.findall(r'href="(https?://[^"]+)"', res['data'])
+    def extract_media_links(link):
+        try:
+            response = requests.get(link, headers=Insta.headers)
+            if response.ok:
+                soup = bs4.BeautifulSoup(response.text, 'html.parser')
+                video_tags = soup.find_all('meta', property='og:video')
+                if video_tags:
+                    return [tag['content'] for tag in video_tags]
+                image_tags = soup.find_all('meta', property='og:image')
+                if image_tags:
+                    return [tag['content'] for tag in image_tags]
+        except Exception as e:
+            print(f"Error extracting media links: {e}")
         return None
 
     @staticmethod
     async def send_file(client, event, content_value):
         try:
             await client.send_file(event.chat_id, content_value, caption="Here's your Instagram content")
-        except:
-            fileoutput = f"{str(content_value)}"
-            downfile = wget.download(content_value, out=fileoutput)
-            await client.send_file(event.chat_id, fileoutput, caption="Here's your Instagram content")
+        except Exception as e:
+            await event.reply(f"Error sending file: {e}")
