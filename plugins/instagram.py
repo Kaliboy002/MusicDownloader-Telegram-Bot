@@ -123,11 +123,16 @@ class Insta:
 
     @staticmethod
     async def download_story(client, event, link):
-        meta_tag = await Insta.search_saveig(link)
-        if meta_tag:
-            await Insta.send_file(client, event, meta_tag[0])
-        else:
-            await event.reply("Oops, something went wrong")
+        try:
+            meta_tags = await Insta.search_saveig(link)
+            if meta_tags:
+                for meta in meta_tags:
+                    await asyncio.sleep(1)
+                    await Insta.send_file(client, event, meta)
+            else:
+                await event.reply("No story content found or it's not publicly accessible.")
+        except Exception as e:
+            await event.reply(f"Error downloading story: {e}")
 
     @staticmethod
     async def get_meta_tag(link):
