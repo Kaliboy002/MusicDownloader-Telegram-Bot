@@ -3,7 +3,6 @@ from utils import asyncio, re, requests
 
 
 class Insta:
-
     @classmethod
     def initialize(cls):
         cls.headers = {
@@ -51,10 +50,7 @@ class Insta:
     def is_publicly_available(url) -> bool:
         try:
             response = requests.get(url, headers=Insta.headers)
-            if response.status_code == 200:
-                return True
-            else:
-                return False
+            return response.status_code == 200
         except:
             return False
 
@@ -88,7 +84,7 @@ class Insta:
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
 
-        start_message = await event.respond("Processing Your insta link ....")
+        start_message = await event.respond("Processing Your Instagram link ....")
         try:
             if "ddinstagram.com" in link:
                 raise Exception
@@ -113,21 +109,28 @@ class Insta:
 
     @staticmethod
     async def download_post(client, event, link):
-        meta_tags = await Insta.search_saveig(link)
-        if meta_tags:
-            for meta in meta_tags[:-1]:
-                await asyncio.sleep(1)
-                await Insta.send_file(client, event, meta)
-        else:
-            await event.reply("Oops, something went wrong")
+        try:
+            meta_tags = await Insta.search_saveig(link)
+            if meta_tags:
+                for meta in meta_tags:
+                    await asyncio.sleep(1)
+                    await Insta.send_file(client, event, meta)
+            else:
+                raise ValueError("No photos found.")
+        except Exception as e:
+            await event.reply(f"Error downloading post: {e}")
 
     @staticmethod
     async def download_story(client, event, link):
-        meta_tag = await Insta.search_saveig(link)
-        if meta_tag:
-            await Insta.send_file(client, event, meta_tag[0])
-        else:
-            await event.reply("Oops, something went wrong")
+        try:
+            meta_tags = await Insta.search_saveig(link)
+            if meta_tags:
+                for meta in meta_tags:
+                    await Insta.send_file(client, event, meta)
+            else:
+                raise ValueError("No stories found.")
+        except Exception as e:
+            await event.reply(f"Error downloading story: {e}")
 
     @staticmethod
     async def get_meta_tag(link):
@@ -137,18 +140,23 @@ class Insta:
 
     @staticmethod
     async def search_saveig(link):
-        meta_tag = requests.post("https://saveig.app/api/ajaxSearch", data={"q": link, "t": "media", "lang": "en"},
-                                 headers=Insta.headers)
-        if meta_tag.ok:
-            res = meta_tag.json()
-            return re.findall(r'href="(https?://[^"]+)"', res['data'])
-        return None
+        try:
+            response = requests.post(
+                "https://saveig.app/api/ajaxSearch",
+                data={"q": link, "t": "media", "lang": "en"},
+                headers=Insta.headers
+            )
+            if response.ok:
+                res = response.json()
+                return re.findall(r'href="(https?://[^"]+)"', res['data'])
+            return None
+        except Exception:
+            return None
 
     @staticmethod
     async def send_file(client, event, content_value):
         try:
-            await client.send_file(event.chat_id, content_value, caption="Here's your Instagram content")
+            await client.send_file(event.chat_id, content_value, caption="Here's your Instagram content.")
         except:
-            fileoutput = f"{str(content_value)}"
-            downfile = wget.download(content_value, out=fileoutput)
-            await client.send_file(event.chat_id, fileoutput, caption="Here's your Instagram content")
+            fileoutput = wget.download(content_value)
+            await client.send_file(event.chat_id, fileoutput, caption="Here's your Instagram content.")
