@@ -26,7 +26,7 @@ class Insta:
 
     @staticmethod
     def extract_url(text) -> str | None:
-        pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories)\/[\w-]+\/?(?:\?[^\s]+)?(?:={1,2})?)'
+        pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories|p)\/[\w-]+\/?(?:\?[^\s]+)?(?:={1,2})?)'
         match = re.search(pattern, text)
         if match:
             return match.group(0)
@@ -35,7 +35,7 @@ class Insta:
     @staticmethod
     def determine_content_type(text) -> str:
         content_types = {
-            '/p/': 'post',  # Posts can include photos and videos
+            '/p/': 'post',
             '/reel/': 'reel',
             '/tv': 'igtv',
             '/stories/': 'story',
@@ -79,7 +79,7 @@ class Insta:
     @staticmethod
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
-        start_message = await event.respond("Processing Your Instagram link ....")
+        start_message = await event.respond("Processing your Instagram link ....")
         try:
             if "ddinstagram.com" in link:
                 raise Exception
