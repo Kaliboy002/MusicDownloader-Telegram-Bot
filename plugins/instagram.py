@@ -51,7 +51,10 @@ class Insta:
     def is_publicly_available(url) -> bool:
         try:
             response = requests.get(url, headers=Insta.headers)
-            return response.status_code == 200
+            if response.status_code == 200:
+                return True
+            else:
+                return False
         except:
             return False
 
@@ -76,8 +79,8 @@ class Insta:
                     "Sorry, unable to find the requested content. Please ensure it's publicly available.")
                 await start_message.delete()
                 return True
-        except Exception as e:
-            await event.reply(f"Error occurred: {e}")
+        except:
+            await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
             await start_message.delete()
             return False
 
@@ -85,7 +88,7 @@ class Insta:
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
 
-        start_message = await event.respond("Processing your Instagram link ....")
+        start_message = await event.respond("Processing Your insta link ....")
         try:
             if "ddinstagram.com" in link:
                 raise Exception
@@ -97,55 +100,47 @@ class Insta:
     @staticmethod
     async def download_reel(client, event, link):
         try:
-            meta_tag = await Insta.get_meta_tag(link, "og:video")
-            content_value = meta_tag['content'] if meta_tag else None
+            meta_tag = await Insta.get_meta_tag(link)
+            content_value = f"https://ddinstagram.com{meta_tag['content']}"
+        except:
+            meta_tag = await Insta.search_saveig(link)
+            content_value = meta_tag[0] if meta_tag else None
 
-            if content_value:
-                await Insta.send_file(client, event, content_value)
-            else:
-                raise ValueError("Reel content not found.")
-        except Exception as e:
-            await event.reply(f"Error downloading reel: {e}")
+        if content_value:
+            await Insta.send_file(client, event, content_value)
+        else:
+            await event.reply("Oops, something went wrong")
 
     @staticmethod
     async def download_post(client, event, link):
-        try:
-            meta_tags = await Insta.search_saveig(link)
-            if meta_tags:
-                for meta in meta_tags:
-                    await asyncio.sleep(1)
-                    await Insta.send_file(client, event, meta)
-            else:
-                raise ValueError("Post content not found.")
-        except Exception as e:
-            await event.reply(f"Error downloading post: {e}")
+        meta_tags = await Insta.search_saveig(link)
+        if meta_tags:
+            for meta in meta_tags[:-1]:
+                await asyncio.sleep(1)
+                await Insta.send_file(client, event, meta)
+        else:
+            await event.reply("Oops, something went wrong")
 
     @staticmethod
     async def download_story(client, event, link):
-        try:
-            meta_tag = await Insta.search_saveig(link)
-            if meta_tag:
-                await Insta.send_file(client, event, meta_tag[0])
-            else:
-                raise ValueError("Story content not found.")
-        except Exception as e:
-            await event.reply(f"Error downloading story: {e}")
+        meta_tag = await Insta.search_saveig(link)
+        if meta_tag:
+            await Insta.send_file(client, event, meta_tag[0])
+        else:
+            await event.reply("Oops, something went wrong")
 
     @staticmethod
-    async def get_meta_tag(link, property_name):
+    async def get_meta_tag(link):
         getdata = requests.get(link).text
         soup = bs4.BeautifulSoup(getdata, 'html.parser')
-        return soup.find('meta', attrs={'property': property_name})
+        return soup.find('meta', attrs={'property': 'og:video'})
 
     @staticmethod
     async def search_saveig(link):
-        response = requests.post(
-            "https://saveig.app/api/ajaxSearch",
-            data={"q": link, "t": "media", "lang": "en"},
-            headers=Insta.headers,
-        )
-        if response.ok:
-            res = response.json()
+        meta_tag = requests.post("https://saveig.app/api/ajaxSearch", data={"q": link, "t": "media", "lang": "en"},
+                                 headers=Insta.headers)
+        if meta_tag.ok:
+            res = meta_tag.json()
             return re.findall(r'href="(https?://[^"]+)"', res['data'])
         return None
 
