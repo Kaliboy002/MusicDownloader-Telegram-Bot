@@ -121,9 +121,9 @@ class YoutubeDownloader:
             await client.send_file(
                 event.chat_id,
                file=thumbnail,
-               caption="🇺🇲 Select a format to download it:
+               caption="""🇺🇲 Select a format to download it:
 ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-🇮🇷 :فرمت برای دانلود رو انتخاب کنید ",
+🇮🇷 :فرمت برای دانلود رو انتخاب کنید """,
                buttons=buttons
                )
         except WebpageMediaEmptyError:
@@ -138,9 +138,9 @@ class YoutubeDownloader:
         user_id = event.sender_id
 
         if await db.get_file_processing_flag(user_id):
-            return await event.respond("🇺🇲 Sorry, another file is being processed ⏳
+            return await event.respond("""🇺🇲 Sorry, another file is being processed ⏳
 ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-🇮🇷 ببخشید، فایلی قبلاً در حال پردازش⏳")
+🇮🇷 ببخشید، فایلی قبلاً در حال پردازش⏳""")
 
         data = event.data.decode('utf-8')
         parts = data.split('/')
@@ -199,9 +199,9 @@ class YoutubeDownloader:
                     except DownloadError as e:
                         await db.set_file_processing_flag(user_id, is_processing=False)
 
-            upload_message = await event.respond("Uploading ... Hold on! 🚀⏳
+            upload_message = await event.respond("""Uploading ... Hold on! 🚀⏳
 ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
-در حال آپلود ... یک لحظه! 🚀⏳")
+در حال آپلود ... یک لحظه! 🚀⏳""")
 
             try:
                 async with client.action(event.chat_id, 'document'):
