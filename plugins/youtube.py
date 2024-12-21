@@ -8,7 +8,7 @@ class YoutubeDownloader:
 
     @classmethod
     def initialize(cls):
-        cls.MAXIMUM_DOWNLOAD_SIZE_MB = 500
+        cls.MAXIMUM_DOWNLOAD_SIZE_MB = 1024
         cls.DOWNLOAD_DIR = 'repository/Youtube'
 
         if not os.path.isdir(cls.DOWNLOAD_DIR):
@@ -121,7 +121,9 @@ class YoutubeDownloader:
             await client.send_file(
                 event.chat_id,
                file=thumbnail,
-               caption="Select a format to download:",
+               caption="🇺🇲 Select a format to download it:
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 :فرمت برای دانلود رو انتخاب کنید ",
                buttons=buttons
                )
         except WebpageMediaEmptyError:
@@ -136,7 +138,9 @@ class YoutubeDownloader:
         user_id = event.sender_id
 
         if await db.get_file_processing_flag(user_id):
-            return await event.respond("Sorry, There is already a file being processed for you.")
+            return await event.respond("🇺🇲 Sorry, another file is being processed ⏳
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+🇮🇷 ببخشید، فایلی قبلاً در حال پردازش⏳")
 
         data = event.data.decode('utf-8')
         parts = data.split('/')
@@ -159,7 +163,7 @@ class YoutubeDownloader:
             path = YoutubeDownloader.get_file_path(url, format_id, extension)
 
             if not os.path.isfile(path):
-                downloading_message = await event.respond("Downloading the file for you ...")
+                downloading_message = await event.respond("Downloading ... wait! ⚡⏳")
                 ydl_opts = {
                     'format': format_id,
                     'outtmpl': path,
@@ -174,12 +178,12 @@ class YoutubeDownloader:
                         height = info.get('height', 0)
                     except DownloadError as e:
                         await db.set_file_processing_flag(user_id, is_processing=False)
-                        return await downloading_message.edit(f"Sorry Something went wrong:\nError:"
+                        return await downloading_message.edit(f"Oops, something went wrong! 😬❌:\nError:"
                                                               f"  {str(e).split('Error')[-1]}")
                 await downloading_message.delete()
             else:
                 local_availability_message = await event.respond(
-                    "This file is available locally. Preparing it for you now...")
+                    "Downloading ... wait! ⚡⏳")
 
                 ydl_opts = {
                     'format': format_id,
@@ -195,7 +199,9 @@ class YoutubeDownloader:
                     except DownloadError as e:
                         await db.set_file_processing_flag(user_id, is_processing=False)
 
-            upload_message = await event.respond("Uploading ... Please hold on.")
+            upload_message = await event.respond("Uploading ... Hold on! 🚀⏳
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+در حال آپلود ... یک لحظه! 🚀⏳")
 
             try:
                 async with client.action(event.chat_id, 'document'):
@@ -231,7 +237,7 @@ class YoutubeDownloader:
                         audio_attributes = DocumentAttributeAudio(
                             duration=int(duration),
                             title="Downloaded Audio",
-                            performer="@Spotify_YT_Downloader_BOT",
+                            performer="❤️‍🩹 Downloaded by ➣ @Kddfyu",
                         )
 
                         media = InputMediaUploadedDocument(
@@ -242,7 +248,7 @@ class YoutubeDownloader:
                         )
 
                     await client.send_file(event.chat_id, file=media,
-                                           caption=f"Enjoy!\n@Spotify_YT_Downloader_BOT",
+                                           caption=f"❤️‍🩹 Downloaded by ➣ @Kddfyu  ",
                                            force_document=False,
                                            supports_streaming=True)
 
