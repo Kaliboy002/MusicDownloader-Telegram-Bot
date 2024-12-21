@@ -75,8 +75,8 @@ class Bot:
 
     @classmethod
     def initialize_messages(cls):
-        # Initialize messages here
-        cls.start_message = BotMessageHandler.start_message
+        # Initialize messages with no buttons initially
+        cls.start_message = "Welcome to the bot! Type /menu to see available options."
         cls.instruction_message = BotMessageHandler.instruction_message
         cls.search_result_message = BotMessageHandler.search_result_message
         cls.core_selection_message = BotMessageHandler.core_selection_message
@@ -85,7 +85,7 @@ class Bot:
 
     @classmethod
     def initialize_buttons(cls):
-        # Initialize buttons here
+        # Define buttons here but keep them hidden initially
         cls.main_menu_buttons = Buttons.main_menu_buttons
         cls.back_button = Buttons.back_button
         cls.setting_button = Buttons.setting_button
@@ -94,11 +94,14 @@ class Bot:
         cls.admins_buttons = Buttons.admins_buttons
         cls.broadcast_options_buttons = Buttons.broadcast_options_buttons
 
+        # Initially, no buttons are shown
+        cls.start_message_buttons = None
+
     @classmethod
     async def initialize_action_queries(cls):
         # Mapping button actions to functions
         cls.button_actions = {
-            b"membership/continue": lambda e: asyncio.create_task(handle_continue_in_membership_message(e)),
+            b"menu": lambda e: asyncio.create_task(Bot.handle_menu(e)),
             b"instructions": lambda e: asyncio.create_task(
                 BotMessageHandler.edit_message(e, Bot.instruction_message, buttons=Bot.back_button)),
             b"back": lambda e: asyncio.create_task(
@@ -140,55 +143,14 @@ class Bot:
         }
 
     @staticmethod
-    async def change_music_quality(event, format, quality):
-        user_id = event.sender_id
-        music_quality = {'format': format, 'quality': quality}
-        await db.set_user_music_quality(user_id, music_quality)
-        await BotMessageHandler.edit_message(event,
-                                             f"Quality successfully changed.\n\nFormat: {music_quality['format']}"
-                                             f"\nQuality: {music_quality['quality']}",
-                                             buttons=Buttons.get_quality_setting_buttons(music_quality))
+    async def handle_menu(event):
+        # Send menu buttons when the user requests them
+        await BotMessageHandler.send_message(
+            event,
+            "Here is the menu:",
+            buttons=Bot.main_menu_buttons
+            )
 
-    @staticmethod
-    async def change_downloading_core(event, downloading_core):
-        user_id = event.sender_id
-        await db.set_user_downloading_core(user_id, downloading_core)
-        await BotMessageHandler.edit_message(event, f"Core successfully changed.\n\nCore: {downloading_core}",
-                                             buttons=Buttons.get_core_setting_buttons(downloading_core))
-
-    @staticmethod
-    async def change_tweet_capture_night_mode(event, mode: str):
-        user_id = event.sender_id
-        await TweetCapture.set_settings(user_id, {'night_mode': mode})
-        mode_to_show = "Light"
-        match mode:
-            case "1":
-                mode_to_show = "Dark"
-            case "2":
-                mode_to_show = "Black"
-        await BotMessageHandler.edit_message(event, f"Night mode successfully changed.\n\nNight mode: {mode_to_show}",
-                                             buttons=Buttons.get_tweet_capture_setting_buttons(mode))
-
-    @staticmethod
-    async def cancel_subscription(event, quite: bool = False):
-        user_id = event.sender_id
-        if await db.is_user_subscribed(user_id):
-            await db.remove_subscribed_user(user_id)
-            if not quite:
-                await BotMessageHandler.edit_message(event, "You have successfully unsubscribed.",
-                                                     buttons=Buttons.get_subscription_setting_buttons(
-                                                         subscription=False))
-            else:
-                await event.respond(
-                    "You have successfully unsubscribed.\nYou Can Subscribe Any Time Using /subscribe command. :)")
-
-    @staticmethod
-    async def add_subscription(event):
-        user_id = event.sender_id
-        if not await db.is_user_subscribed(user_id):
-            await db.add_subscribed_user(user_id)
-            await BotMessageHandler.edit_message(event, "You have successfully subscribed.",
-                                                 buttons=Buttons.get_subscription_setting_buttons(subscription=True))
 
     @staticmethod
     async def process_bot_interaction(event) -> bool:
