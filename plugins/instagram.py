@@ -45,7 +45,7 @@ class Insta:
             if pattern in text:
                 return content_type
 
-        return None
+        return 'photo'  # Assume it's a photo if no specific content type matches
 
     @staticmethod
     def is_publicly_available(url) -> bool:
@@ -68,12 +68,14 @@ class Insta:
                 await Insta.download_post(client, event, link)
             elif content_type == 'story':
                 await Insta.download_story(client, event, link)
+            elif content_type == 'photo':
+                await Insta.download_photo(client, event, link)
             else:
                 await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
             await start_message.delete()
             return True
-        except:
-            await event.reply("Sorry, unable to find the requested content. Please ensure it's publicly available.")
+        except Exception as e:
+            await event.reply(f"An error occurred: {str(e)}")
             await start_message.delete()
             return False
 
@@ -81,14 +83,14 @@ class Insta:
     async def download(client, event) -> bool:
         link = Insta.extract_url(event.message.text)
 
-        start_message = await event.respond("Processing Your Instagram link ....")
+        start_message = await event.respond("Processing Your insta link ....")
         try:
             if "ddinstagram.com" in link:
                 raise Exception
             link = link.replace("instagram.com", "ddinstagram.com")
             return await Insta.download_content(client, event, start_message, link)
         except:
-            await Insta.download_content(client, event, start_message, link)
+            return await Insta.download_content(client, event, start_message, link)
 
     @staticmethod
     async def download_reel(client, event, link):
@@ -108,7 +110,7 @@ class Insta:
     async def download_post(client, event, link):
         meta_tags = await Insta.search_saveig(link)
         if meta_tags:
-            for meta in meta_tags:
+            for meta in meta_tags[:-1]:
                 await asyncio.sleep(1)
                 await Insta.send_file(client, event, meta)
         else:
@@ -121,6 +123,16 @@ class Insta:
             await Insta.send_file(client, event, meta_tag[0])
         else:
             await event.reply("Oops, something went wrong")
+
+    @staticmethod
+    async def download_photo(client, event, link):
+        try:
+            response = requests.get(link, headers=Insta.headers)
+            soup = bs4.BeautifulSoup(response.text, 'html.parser')
+            photo_url = soup.find('meta', property='og:image')['content']
+            await Insta.send_file(client, event, photo_url)
+        except Exception:
+            await event.reply("Oops, unable to fetch the photo. Please try again.")
 
     @staticmethod
     async def get_meta_tag(link):
