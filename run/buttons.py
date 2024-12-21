@@ -1,9 +1,12 @@
+
+
 from run import Button
 
 
 class Buttons:
-    back_button = Button.inline("<< Back To Main Menu", b"back")
-
+    main_menu_buttons = [
+        [Button.inline("Instructions", b"instructions")]
+    ]
     setting_button = [
         [Button.inline("Core", b"setting/core")],
         [Button.inline("Quality", b"setting/quality")],
