@@ -4,7 +4,7 @@ from run import Button
 class Buttons:
         # Only keeping the Instructions button
     main_menu_buttons = [
-        [Button.inline("Instructions", b"instructions")],
+        [Button.inline("About 📜 درباره", b"instructions")],
     ]
     back_button = Button.inline("<< Back To Main Menu", b"back")
 
