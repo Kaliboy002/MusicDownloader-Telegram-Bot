@@ -5,7 +5,7 @@ class Buttons:
     main_menu_buttons = [
         [Button.url("Redirect Channel 1", "https://t.me/channel_1")],
         [Button.url("Redirect Channel 2", "https://t.me/channel_2")],
-        [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
+        [Button.inline("Other Bots 🤖 ربات های دیکر", b"instruction")],
     ]
 
     setting_button = [
