@@ -46,7 +46,7 @@ def optional_redirect_button():
     """
     Returns an optional Button object that redirects to a specified URL.
     """
-    return Button.url("hsjwjwjjwe", "https://example.com")  # Replace with your desired URL
+    return Button.url("𝐴𝐹𝐺 𝐖𝐡𝐚𝐥𝐞", "https://t.me/afg_whale_1")  # Replace with your desired URL
 
 
 async def respond_based_on_channel_membership(event, message_if_in_channels: str = None, buttons: str = None,
