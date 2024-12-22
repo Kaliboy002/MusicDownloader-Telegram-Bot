@@ -4,12 +4,12 @@ from run import Button
 class Buttons:
     # Main menu buttons with two redirect URL buttons and the Instructions button
     main_menu_buttons = [
-        [Button.url("Redirect URL 1", "https://example.com/1")],
-        [Button.url("Redirect URL 2", "https://example.com/2")],
-        [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
+        [Button.url("𓆩 𝙆𝙖𝙡𝙞 𝙇𝙞𝙣𝙪𝙭 𓆪", "https://t.me/Kali_Linux_BOTS")],
+        [Button.url("𝐴𝐹𝐺 𝐖𝐡𝐚𝐥𝐞", "https://t.me/afg_whale_1")],
+        [Button.inline("عضو شدم 🔐 Joined", b"instructions")],
     ]
 
-    back_button = Button.inline("Enjoy from Bot! 😇🤞 !از ربات لذت ببرید", b"search_result")
+    back_button = Button.inline("Enjoy from Bot! 😇🤞 !از ربات لذت ببرید", b"JOIN_CHANNEL_MESSAGE")
 
     setting_button = [
         [Button.inline("Core", b"setting/core")],
