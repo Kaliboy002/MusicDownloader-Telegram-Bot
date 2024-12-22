@@ -26,11 +26,20 @@ class Insta:
 
     @staticmethod
     def extract_url(text) -> str | None:
-        # Updated pattern to capture both standard and share reel URLs
+        # Updated pattern to handle both reel and share/reel URLs
         pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories)\/[\w-]+(?:\/\?igsh=[\w-]+)?(?:\?[^\s]+)?(?:={1,2})?)'
         match = re.search(pattern, text)
         if match:
             return match.group(0)
+        
+        # Handle 'share/reel/' type URLs by redirecting to the real reel URL
+        share_reel_pattern = r'https?:\/\/(?:www\.)?instagram\.com\/share\/reel\/([\w-]+)'
+        share_match = re.search(share_reel_pattern, text)
+        if share_match:
+            # Build the actual reel URL from the share link
+            reel_id = share_match.group(1)
+            return f'https://www.instagram.com/reel/{reel_id}/'
+        
         return None
 
     @staticmethod
