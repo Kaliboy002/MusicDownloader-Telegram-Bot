@@ -153,8 +153,8 @@ class Insta:
     @staticmethod
     async def send_file(client, event, content_value):
         try:
-            await client.send_file(event.chat_id, content_value, caption="⚡Saved ➣ @Kali")
+            await client.send_file(event.chat_id, content_value, caption="🤖 Downloaded ➣ @InstaTubeDLbot")
         except:
             fileoutput = f"{str(content_value)}"
             downfile = wget.download(content_value, out=fileoutput)
-            await client.send_file(event.chat_id, fileoutput, caption="⚡Saved ➣ @Kali")
+            await client.send_file(event.chat_id, fileoutput, caption="🤖 Downloaded ➣ @InstaTubeDLbot")
