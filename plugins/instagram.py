@@ -26,7 +26,8 @@ class Insta:
 
     @staticmethod
     def extract_url(text) -> str | None:
-        pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories)\/[\w-]+\/?(?:\?[^\s]+)?(?:={1,2})?)'
+        # Updated pattern to capture both standard and share reel URLs
+        pattern = r'(https?:\/\/(?:www\.)?(?:ddinstagram\.com|instagram\.com|instagr\.am)\/(?:p|reel|tv|stories)\/[\w-]+(?:\/\?igsh=[\w-]+)?(?:\?[^\s]+)?(?:={1,2})?)'
         match = re.search(pattern, text)
         if match:
             return match.group(0)
