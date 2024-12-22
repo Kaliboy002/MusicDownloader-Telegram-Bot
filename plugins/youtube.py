@@ -121,7 +121,7 @@ class YoutubeDownloader:
             await client.send_file(
                 event.chat_id,
                file=thumbnail,
-               caption="""🇺🇲 Select a format to download it:
+               caption="""🇺🇲 Select a format to download it :
 🇮🇷 فرمت برای دانلود رو انتخاب کنید : """,
                buttons=buttons
                )
@@ -236,7 +236,7 @@ class YoutubeDownloader:
                         audio_attributes = DocumentAttributeAudio(
                             duration=int(duration),
                             title="Downloaded Audio",
-                            performer="❤️‍🩹 🤖 ➣ @Kali_Downloader_Bot",
+                            performer="🤖 Downloaded ➣ @InstaTubeDLbot",
                         )
 
                         media = InputMediaUploadedDocument(
@@ -247,7 +247,7 @@ class YoutubeDownloader:
                         )
 
                     await client.send_file(event.chat_id, file=media,
-                                           caption=f"❤️‍🩹 🤖 ➣ @Kali_Downloader_Bot",
+                                           caption=f"🤖 Downloaded ➣ @InstaTubeDLbot",
                                            force_document=False,
                                            supports_streaming=True)
 
