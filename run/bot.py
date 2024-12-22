@@ -355,8 +355,7 @@ class Bot:
             return
 
         if len(event.message.text) > 33:
-            return await event.respond("🚫 Invalid Download Link
-")
+            return await event.respond(" 🚫 Invalid Download Link")
 
         waiting_message_search = await event.respond('⏳')
         sanitized_query = await sanitize_query(event.message.text)
