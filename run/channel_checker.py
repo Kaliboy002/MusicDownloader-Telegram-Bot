@@ -32,37 +32,30 @@ async def is_user_in_channel(user_id, channel_usernames=None):
 
 
 def join_channel_button(channel_username):
-    """
-    Returns a Button object that, when clicked, directs users to join the specified channel.
-    """
     return Button.url("𓆩 𝙆𝙖𝙡𝙞 𝙇𝙞𝙣𝙪𝙭 𓆪", f"https://t.me/{channel_username}")
 
 
 def optional_redirect_button():
-    """
-    Returns an optional Button object that redirects to a specified URL.
-    """
-    return Button.url("𝐴𝐹𝐺 𝐖𝐡𝐚𝐥𝐞", "https://t.me/afg_whale_1")  # Replace with your desired URL
+    return Button.url("𝐴𝐹𝐺 𝐖𝐡𝐚𝐥𝐞", "https://t.me/afg_whale_1")
 
 
-async def respond_based_on_channel_membership(event, message_if_in_channels: str = None, buttons: str = None,
-                                              channels_user_is_not_in: list = None):
+async def respond_based_on_channel_membership(event, message_if_in_channels=None, buttons=None):
     sender_name = event.sender.first_name
     user_id = event.sender_id
-    buttons_if_in_channel = buttons
+    channels_user_is_not_in = await is_user_in_channel(user_id)
 
-    if channels_user_is_not_in is None:
-        channels_user_is_not_in = await is_user_in_channel(user_id)
-
-    if channels_user_is_not_in and (user_id not in BotState.ADMIN_USER_IDS):
+    if channels_user_is_not_in:
         join_channel_buttons = [[join_channel_button(channel)] for channel in channels_user_is_not_in]
         join_channel_buttons.append([optional_redirect_button()])
         join_channel_buttons.append(Buttons.continue_button)
         await BotMessageHandler.send_message(event,
-                                             f"""Hey {sender_name}!👋 \n{BotMessageHandler.JOIN_CHANNEL_MESSAGE}""",
+                                             f"""Hey {sender_name}!👋 \nPlease join the required channels to continue.""",
                                              buttons=join_channel_buttons)
     else:
-        await BotMessageHandler.send_message(event, message_if_in_channels, buttons=buttons_if_in_channel)
+        user_already_in_db = await db.check_username_in_database(user_id)
+        if not user_already_in_db:
+            await db.create_user_settings(user_id)
+        await BotMessageHandler.send_message(event, message_if_in_channels, buttons=buttons)
 
 
 async def handle_continue_in_membership_message(event):
@@ -75,22 +68,16 @@ async def handle_continue_in_membership_message(event):
         join_channel_buttons.append([optional_redirect_button()])
         join_channel_buttons.append(Buttons.continue_button)
         await BotMessageHandler.edit_message(event,
-                                             f"""Hey {sender_name}!👋 \n{BotMessageHandler.JOIN_CHANNEL_MESSAGE}""",
+                                             f"""Hey {sender_name}!👋 \nPlease join the required channels to proceed.""",
                                              buttons=join_channel_buttons)
-        await event.answer("⚠️ You need to join our channels to continue.")
+        await event.answer("⚠️ You need to join our channels to continue.", alert=True)
     else:
-        user_already_in_db = await db.check_username_in_database(user_id)
-        if not user_already_in_db:
-            await db.create_user_settings(user_id)
         await event.delete()
-        await respond_based_on_channel_membership(event, f"""Hey {sender_name}!👋 \n{BotMessageHandler.start_message}""",
+        await respond_based_on_channel_membership(event, f"""Hey {sender_name}!👋 \nWelcome to the bot!""",
                                                   buttons=Buttons.main_menu_buttons)
 
 
 async def handle_join_button_click(event, channel_username):
-    """
-    Handle the event when the user clicks the 'Join' button.
-    """
     user_id = event.sender_id
     channels_user_is_not_in = await is_user_in_channel(user_id, [channel_username])
 
