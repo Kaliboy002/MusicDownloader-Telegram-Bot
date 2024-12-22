@@ -5,7 +5,14 @@ from telethon.errors.rpcerrorlist import MessageNotModifiedError
 
 
 class BotMessageHandler:
-    start_message = """
+    start_message = """⚠️ **To use this bot, you must first join our Telegram channels**.
+Once you've joined, click on |** Joined** | button to proceed 🔐
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+⚠️** برای استفاده از این ربات، نخست شما باید به کانال‌ های زیر عضو گردید **
+پس از پیوستن به کانال روی دکمه | **عضو شدم** | را کلیک نماید 🔐
+"""
+
+    instruction_message = """
 🇺🇲 **| Welcome to Video Downloader **🎬
 
 📌 You can easily download **Instagram** and **YouTube** videos and reels in high speed and quality⚡
@@ -17,20 +24,6 @@ class BotMessageHandler:
 📌 شما به خیلی آسانی میتوانید ویدیو و فیلم های کوتاه را از** اینستاگرام و یوتیوب **با سرعت و کیفیت بالا دانلود نماید⚡
 
 **🖇️ فقط کافیه لینک ویدیو مورد نظر را به من بفرستید 🙂**
-"""
-
-    instruction_message = """
-╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
-       🆔🤖 @Kali_Number_BOT 
-╰┈┈┈┈┈┈┈┈┈┈┈┈┈╯
-
-╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
-       🆔🤖 @KaIi_Linux_Bot 
-╰┈┈┈┈┈┈┈┈┈┈┈┈┈╯
-
- ╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
-          🆔🤖 @InstaTubeDLbot
- ╰┈┈┈┈┈┈┈┈┈┈┈┈┈╯
         """
 
     search_result_message = """🎵 The following are the top search results that correspond to your query:
