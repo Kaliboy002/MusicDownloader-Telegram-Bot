@@ -2,18 +2,17 @@ from run import Button
 
 
 class Buttons:
-        # Only keeping the Instructions button
+    # Only keeping the Instructions button in the main menu
     main_menu_buttons = [
         [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
     ]
-    back_button = Button.inline("<< Back To Main Menu", b"back")
 
+    # Setting buttons without the back button
     setting_button = [
         [Button.inline("Core", b"setting/core")],
         [Button.inline("Quality", b"setting/quality")],
         [Button.inline("TweetCapture", b"setting/TweetCapture")],
         [Button.inline("Subscription", b"setting/subscription")],
-        [back_button]
     ]
 
     back_button_to_setting = Button.inline("<< Back", b"setting/back")
@@ -47,21 +46,21 @@ class Buttons:
                     [Button.inline("🔹 Light mode", data=b"setting/TweetCapture/mode/0")],
                     [Button.inline("Dark mode", data=b"setting/TweetCapture/mode/1")],
                     [Button.inline("Black mode", data=b"setting/TweetCapture/mode/2")],
-                    [Buttons.back_button, Buttons.back_button_to_setting]
+                    [Buttons.back_button_to_setting]
                 ]
             case "1":
                 return [
                     [Button.inline("Light mode", data=b"setting/TweetCapture/mode/0")],
                     [Button.inline("🔹 Dark mode", data=b"setting/TweetCapture/mode/1")],
                     [Button.inline("Black mode", data=b"setting/TweetCapture/mode/2")],
-                    [Buttons.back_button, Buttons.back_button_to_setting]
+                    [Buttons.back_button_to_setting]
                 ]
             case "2":
                 return [
                     [Button.inline("Light mode", data=b"setting/TweetCapture/mode/0")],
                     [Button.inline("Dark mode", data=b"setting/TweetCapture/mode/1")],
                     [Button.inline("🔹 Black mode", data=b"setting/TweetCapture/mode/2")],
-                    [Buttons.back_button, Buttons.back_button_to_setting]
+                    [Buttons.back_button_to_setting]
                 ]
 
     @staticmethod
@@ -69,12 +68,12 @@ class Buttons:
         if subscription:
             return [
                 [Button.inline("UnSubscribe", data=b"setting/subscription/cancel")],
-                [Buttons.back_button, Buttons.back_button_to_setting]
+                [Buttons.back_button_to_setting]
             ]
         else:
             return [
                 [Button.inline("Subscribe", data=b"setting/subscription/add")],
-                [Buttons.back_button, Buttons.back_button_to_setting]
+                [Buttons.back_button_to_setting]
             ]
 
     @staticmethod
@@ -85,21 +84,21 @@ class Buttons:
                     [Button.inline("🔸 Auto", data=b"setting/core/auto")],
                     [Button.inline("YoutubeDL", b"setting/core/youtubedl")],
                     [Button.inline("SpotDL", b"setting/core/spotdl")],
-                    [Buttons.back_button, Buttons.back_button_to_setting],
+                    [Buttons.back_button_to_setting],
                 ]
             case "SpotDL":
                 return [
                     [Button.inline("Auto", data=b"setting/core/auto")],
                     [Button.inline("YoutubeDL", b"setting/core/youtubedl")],
                     [Button.inline("🔸 SpotDL", b"setting/core/spotdl")],
-                    [Buttons.back_button, Buttons.back_button_to_setting],
+                    [Buttons.back_button_to_setting],
                 ]
             case "YoutubeDL":
                 return [
                     [Button.inline("Auto", data=b"setting/core/auto")],
                     [Button.inline("🔸 YoutubeDL", b"setting/core/youtubedl")],
                     [Button.inline("SpotDL", b"setting/core/spotdl")],
-                    [Buttons.back_button, Buttons.back_button_to_setting],
+                    [Buttons.back_button_to_setting],
                 ]
 
     @staticmethod
@@ -113,7 +112,7 @@ class Buttons:
                     [Button.inline("◽️ Flac", b"setting/quality/flac")],
                     [Button.inline("Mp3 (320)", b"setting/quality/mp3/320")],
                     [Button.inline("Mp3 (128)", b"setting/quality/mp3/128")],
-                    [Buttons.back_button, Buttons.back_button_to_setting],
+                    [Buttons.back_button_to_setting],
                 ]
 
             case {'format': "mp3", 'quality': "320"}:
@@ -121,7 +120,7 @@ class Buttons:
                     [Button.inline("Flac", b"setting/quality/flac")],
                     [Button.inline("◽️ Mp3 (320)", b"setting/quality/mp3/320")],
                     [Button.inline("Mp3 (128)", b"setting/quality/mp3/128")],
-                    [Buttons.back_button, Buttons.back_button_to_setting],
+                    [Buttons.back_button_to_setting],
                 ]
 
             case {'format': "mp3", 'quality': "128"}:
@@ -129,7 +128,7 @@ class Buttons:
                     [Button.inline("Flac", b"setting/quality/flac")],
                     [Button.inline("Mp3 (320)", b"setting/quality/mp3/320")],
                     [Button.inline("◽️ Mp3 (128)", b"setting/quality/mp3/128")],
-                    [Buttons.back_button, Buttons.back_button_to_setting],
+                    [Buttons.back_button_to_setting],
                 ]
 
     @staticmethod
