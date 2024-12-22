@@ -33,7 +33,7 @@ class Buttons:
         [Button.inline("Cancel", b"cancel")]
     ]
 
-    continue_button = [Button.inline("Continue", data='membership/continue')]
+    continue_button = [Button.inline("عضو شدم | Joined 🔐", data='membership/continue')]
 
     cancel_subscription_button_quite = [Button.inline("UnSubscribe", b"setting/subscription/cancel/quite")]
 
