@@ -75,6 +75,7 @@ class Bot:
 
     @classmethod
     def initialize_messages(cls):
+        # Initialize messages here
         cls.start_message = BotMessageHandler.start_message
         cls.instruction_message = BotMessageHandler.instruction_message
         cls.search_result_message = BotMessageHandler.search_result_message
@@ -84,6 +85,7 @@ class Bot:
 
     @classmethod
     def initialize_buttons(cls):
+        # Initialize buttons here
         cls.main_menu_buttons = Buttons.main_menu_buttons
         cls.back_button = Buttons.back_button
         cls.setting_button = Buttons.setting_button
@@ -94,64 +96,48 @@ class Bot:
 
     @classmethod
     async def initialize_action_queries(cls):
+        # Mapping button actions to functions
         cls.button_actions = {
             b"membership/continue": lambda e: asyncio.create_task(handle_continue_in_membership_message(e)),
-            # Add additional button actions here if necessary
+            b"instructions": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_message(e, Bot.instruction_message, buttons=Bot.back_button)),
+            b"back": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_message(e, f"Hey {e.sender.first_name}!👋\n {Bot.start_message}",
+                                               buttons=Bot.main_menu_buttons)),
+            b"setting": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_message(e, "Settings :", buttons=Bot.setting_button)),
+            b"setting/back": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_message(e, "Settings :", buttons=Bot.setting_button)),
+            b"setting/quality": lambda e: asyncio.create_task(BotMessageHandler.edit_quality_setting_message(e)),
+            b"setting/quality/mp3/320": lambda e: asyncio.create_task(Bot.change_music_quality(e, "mp3", "320")),
+            b"setting/quality/mp3/128": lambda e: asyncio.create_task(Bot.change_music_quality(e, "mp3", "128")),
+            b"setting/quality/flac": lambda e: asyncio.create_task(Bot.change_music_quality(e, "flac", "693")),
+            b"setting/core": lambda e: asyncio.create_task(BotMessageHandler.edit_core_setting_message(e)),
+            b"setting/core/auto": lambda e: asyncio.create_task(Bot.change_downloading_core(e, "Auto")),
+            b"setting/core/spotdl": lambda e: asyncio.create_task(Bot.change_downloading_core(e, "SpotDL")),
+            b"setting/core/youtubedl": lambda e: asyncio.create_task(Bot.change_downloading_core(e, "YoutubeDL")),
+            b"setting/subscription": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_subscription_status_message(e)),
+            b"setting/subscription/cancel": lambda e: asyncio.create_task(Bot.cancel_subscription(e)),
+            b"setting/subscription/cancel/quite": lambda e: asyncio.create_task(Bot.cancel_subscription(e, quite=True)),
+            b"setting/subscription/add": lambda e: asyncio.create_task(Bot.add_subscription(e)),
+            b"setting/TweetCapture": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_tweet_capture_setting_message(e)),
+            b"setting/TweetCapture/mode/0": lambda e: asyncio.create_task(Bot.change_tweet_capture_night_mode(e, "0")),
+            b"setting/TweetCapture/mode/1": lambda e: asyncio.create_task(Bot.change_tweet_capture_night_mode(e, "1")),
+            b"setting/TweetCapture/mode/2": lambda e: asyncio.create_task(Bot.change_tweet_capture_night_mode(e, "2")),
+            b"cancel": lambda e: e.delete(),
+            b"admin/cancel_broadcast": lambda e: asyncio.create_task(BotState.set_admin_broadcast(e.sender_id, False)),
+            b"admin/stats": lambda e: asyncio.create_task(BotCommandHandler.handle_stats_command(e)),
+            b"admin/broadcast": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_message(e, "BroadCast Options: ", buttons=Bot.broadcast_options_buttons)),
+            b"admin/broadcast/all": lambda e: asyncio.create_task(Bot.handle_broadcast(e, send_to_all=True)),
+            b"admin/broadcast/subs": lambda e: asyncio.create_task(Bot.handle_broadcast(e, send_to_subs=True)),
+            b"admin/broadcast/specified": lambda e: asyncio.create_task(
+                Bot.handle_broadcast(e, send_to_specified=True)),
+            b"unavailable_feature": lambda e: asyncio.create_task(Bot.handle_unavailable_feature(e))
+            # Add other actions here
         }
-
-    @staticmethod
-    @events.register(events.NewMessage(pattern="/start"))
-    async def handle_start(event):
-        user_id = event.sender_id
-        username = event.sender.username or f"User {user_id}"
-
-        # Check if user is new
-        is_new_user = not await db.check_username_in_database(user_id)
-        if is_new_user:
-            # Add user to the database
-            await db.create_user_settings(user_id)
-
-            # Notify admins
-            total_users = await db.get_total_user_count()
-            for admin_id in BotState.ADMIN_USER_IDS:
-                try:
-                    await BotState.BOT_CLIENT.send_message(
-                        admin_id,
-                        f"New User Started: @{username}\nTotal Users: {total_users}"
-                    )
-                except Exception as e:
-                    print(f"Failed to notify admin {admin_id}: {e}")
-
-        # Respond to the user
-        await event.reply(
-            f"Welcome {event.sender.first_name} to the bot!",
-            buttons=Buttons.main_menu_buttons
-        )
-
-
-
-    @staticmethod
-    @events.register(events.NewMessage(pattern="/start"))
-    async def handle_start(event):
-        user_id = event.sender_id
-        username = event.sender.username or f"User {user_id}"
-        
-        # Check if user is new
-        is_new_user = not await db.check_username_in_database(user_id)
-        if is_new_user:
-            # Add user to database
-            await db.create_user_settings(user_id)
-            
-            # Notify admin
-            total_users = await db.get_total_user_count()
-            for admin_id in BotState.ADMIN_USER_IDS:
-                await BotState.BOT_CLIENT.send_message(
-                    admin_id,
-                    f"New User Started: @{username}\nTotal Users: {total_users}"
-                )
-        
-        # Respond to the user
-        await event.reply(f"Welcome {event.sender.first_name} to the bot!", buttons=Buttons.main_menu_buttons)
 
     @staticmethod
     async def change_music_quality(event, format, quality):
