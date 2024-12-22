@@ -1,4 +1,4 @@
-from utils import YoutubeDL, re, lru_cache, hashlib, InputMediaPhotoExternal, db
+9from utils import YoutubeDL, re, lru_cache, hashlib, InputMediaPhotoExternal, db
 from utils import os, InputMediaUploadedDocument, DocumentAttributeVideo, fast_upload
 from utils import DocumentAttributeAudio, DownloadError, WebpageMediaEmptyError
 from run import Button, Buttons
@@ -236,7 +236,7 @@ class YoutubeDownloader:
                         audio_attributes = DocumentAttributeAudio(
                             duration=int(duration),
                             title="Downloaded Audio",
-                            performer="❤️‍🩹 Downloaded by ➣ @Kddfyu",
+                            performer="❤️‍🩹 🤖 ➣ @Kali_Downloader_Bot",
                         )
 
                         media = InputMediaUploadedDocument(
@@ -247,7 +247,7 @@ class YoutubeDownloader:
                         )
 
                     await client.send_file(event.chat_id, file=media,
-                                           caption=f"❤️‍🩹 Downloaded by ➣ @Kddfyu  ",
+                                           caption=f"❤️‍🩹 🤖 ➣ @Kali_Downloader_Bot",
                                            force_document=False,
                                            supports_streaming=True)
 
