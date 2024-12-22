@@ -1,8 +1,7 @@
 from run import Button
 
-
 class Buttons:
-        # Only keeping the Instructions button
+    # Only keeping the Instructions button
     main_menu_buttons = [
         [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
     ]
@@ -13,8 +12,7 @@ class Buttons:
         [Button.inline("Quality", b"setting/quality")],
         [Button.inline("TweetCapture", b"setting/TweetCapture")],
         [Button.inline("Subscription", b"setting/subscription")],
-        [back_button]
-    ]
+        ]
 
     back_button_to_setting = Button.inline("<< Back", b"setting/back")
 
