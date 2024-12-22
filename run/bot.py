@@ -94,7 +94,7 @@ class Bot:
         cls.admins_buttons = Buttons.admins_buttons
         cls.broadcast_options_buttons = Buttons.broadcast_options_buttons
 
-classmethod
+    @classmethod
     async def initialize_action_queries(cls):
         # Mapping button actions to functions
         cls.button_actions = {
@@ -104,10 +104,7 @@ classmethod
             b"back": lambda e: asyncio.create_task(
                 BotMessageHandler.edit_message(e, f"Hey {e.sender.first_name}!👋\n {Bot.start_message}",
                                                buttons=Bot.main_menu_buttons)),
-
-        b"back": lambda e: asyncio.create_task(
-            BotMessageHandler.edit_message(e, f"{Bot.start_message}", buttons=Bot.main_menu_buttons)),
-    }        b"setting": lambda e: asyncio.create_task(
+            b"setting": lambda e: asyncio.create_task(
                 BotMessageHandler.edit_message(e, "Settings :", buttons=Bot.setting_button)),
             b"setting/back": lambda e: asyncio.create_task(
                 BotMessageHandler.edit_message(e, "Settings :", buttons=Bot.setting_button)),
