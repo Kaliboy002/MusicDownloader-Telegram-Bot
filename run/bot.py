@@ -140,6 +140,29 @@ class Bot:
         }
 
     @staticmethod
+    @events.register(events.NewMessage(pattern="/start"))
+    async def handle_start(event):
+        user_id = event.sender_id
+        username = event.sender.username or f"User {user_id}"
+        
+        # Check if user is new
+        is_new_user = not await db.check_username_in_database(user_id)
+        if is_new_user:
+            # Add user to database
+            await db.create_user_settings(user_id)
+            
+            # Notify admin
+            total_users = await db.get_total_user_count()
+            for admin_id in BotState.ADMIN_USER_IDS:
+                await BotState.BOT_CLIENT.send_message(
+                    admin_id,
+                    f"New User Started: @{username}\nTotal Users: {total_users}"
+                )
+        
+        # Respond to the user
+        await event.reply(f"Welcome {event.sender.first_name} to the bot!", buttons=Buttons.main_menu_buttons)
+
+    @staticmethod
     async def change_music_quality(event, format, quality):
         user_id = event.sender_id
         music_quality = {'format': format, 'quality': quality}
