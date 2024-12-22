@@ -7,14 +7,12 @@ class Buttons:
         [Button.url("Redirect Channel 2", "https://t.me/channel_2")],
         [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
     ]
-    back_button = Button.inline("<< Back To Main Menu", b"back")
 
     setting_button = [
         [Button.inline("Core", b"setting/core")],
         [Button.inline("Quality", b"setting/quality")],
         [Button.inline("TweetCapture", b"setting/TweetCapture")],
         [Button.inline("Subscription", b"setting/subscription")],
-        [back_button]
     ]
 
     back_button_to_setting = Button.inline("<< Back", b"setting/back")
