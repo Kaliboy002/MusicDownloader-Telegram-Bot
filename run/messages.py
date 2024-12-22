@@ -20,39 +20,17 @@ class BotMessageHandler:
 """
 
     instruction_message = """
-🎧 Music Downloader 🎧
+╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
+       🆔🤖 @Kali_Number_BOT 
+╰┈┈┈┈┈┈┈┈┈┈┈┈┈╯
 
-1. Share Spotify/YouTube song link 🔗
-2. Wait for download confirmation 📣
-3. Receive song file 💾
-4. Or send voice message with song sample 
-   for best match and details 🎤🔍📩
-5. Ask for lyrics, artist info, etc. 📜👨‍🎤
+╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
+       🆔🤖 @Kali_Number_BOT 
+╰┈┈┈┈┈┈┈┈┈┈┈┈┈╯
 
-💡 Tip: Search by title, lyrics, or other details!
-
-📺 YouTube Downloader 📺
-
-1. Send YouTube video link 🔗
-2. Choose video quality (if prompted) 🎥
-3. Wait for download ⏳
-4. Receive video file 📤
-
-📸 Instagram Downloader 📸
-
-1. Send Instagram post/Reel/IGTV link 🔗
-2. Wait for download ⏳
-3. Receive file 📤
-
-🐦 TweetCapture 🐦
-
-1. Provide tweet link 🔗
-2. Wait for screenshot 📸
-3. Receive screenshot 🖼️
-4. For media content, use "Download Media" 
-   button after getting screenshot 📥
-
-Questions? Ask @adibnikjou
+ ╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
+          🆔🤖: @KaIi_Linux_Bot
+ ╰┈┈┈┈┈┈┈┈┈┈┈┈┈╯
         """
 
     search_result_message = """🎵 The following are the top search results that correspond to your query:
