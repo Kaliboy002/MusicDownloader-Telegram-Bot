@@ -8,7 +8,7 @@ class YoutubeDownloader:
 
     @classmethod
     def initialize(cls):
-        cls.MAXIMUM_DOWNLOAD_SIZE_MB = 1024
+        cls.MAXIMUM_DOWNLOAD_SIZE_MB = 500
         cls.DOWNLOAD_DIR = 'repository/Youtube'
 
         if not os.path.isdir(cls.DOWNLOAD_DIR):
