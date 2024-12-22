@@ -29,20 +29,6 @@ class BotState:
     ADMIN_USER_IDS = [int(id) for id in ADMIN_USER_IDS]
     BOT_CLIENT = TelegramClient('bot', int(API_ID), API_HASH)
 
-    # @staticmethod #[DEPRECATED]
-    # def initialize_user_state(user_id):
-    #     if user_id not in BotState.user_states:
-    #         BotState.user_states[user_id] = {
-    #             'admin_message_to_send': None,
-    #             'admin_broadcast': False,
-    #             'send_to_specified_flag': False,
-    #             'messages': {},no
-    #             'search_result': None,
-    #             'tweet_screenshot': None,
-    #             'youtube_search': None,
-    #             'waiting_message': None
-    #         }
-
     @staticmethod
     async def initialize_user_state(user_id):
         if user_id not in BotState.user_states:
@@ -55,31 +41,11 @@ class BotState:
             return BotState.user_states[user_id]
 
     @staticmethod
-    async def get_admin_message_to_send(user_id):
+    async def set_user_state(user_id, key, value):
         user_state = await BotState.get_user_state(user_id)
-        return user_state.admin_message_to_send
+        setattr(user_state, key, value)
 
     @staticmethod
-    async def get_admin_broadcast(user_id):
+    async def get_user_state_property(user_id, key):
         user_state = await BotState.get_user_state(user_id)
-        return user_state.admin_broadcast
-
-    @staticmethod
-    async def get_send_to_specified_flag(user_id):
-        user_state = await BotState.get_user_state(user_id)
-        return user_state.send_to_specified_flag
-
-    @staticmethod
-    async def set_admin_message_to_send(user_id, message):
-        user_state = await BotState.get_user_state(user_id)
-        user_state.admin_message_to_send = message
-
-    @staticmethod
-    async def set_admin_broadcast(user_id, value):
-        user_state = await BotState.get_user_state(user_id)
-        user_state.admin_broadcast = value
-
-    @staticmethod
-    async def set_send_to_specified_flag(user_id, value):
-        user_state = await BotState.get_user_state(user_id)
-        user_state.send_to_specified_flag = value
+        return getattr(user_state, key, None)
