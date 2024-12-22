@@ -1,9 +1,10 @@
 from run import Button
 
-
 class Buttons:
-        # Only keeping the Instructions button
+    # Buttons with two redirect URLs at the top, each in a single row
     main_menu_buttons = [
+        [Button.url("Redirect Channel 1", "https://t.me/channel_1")],
+        [Button.url("Redirect Channel 2", "https://t.me/channel_2")],
         [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
     ]
     back_button = Button.inline("<< Back To Main Menu", b"back")
