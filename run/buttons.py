@@ -2,18 +2,21 @@ from run import Button
 
 
 class Buttons:
-        # Only keeping the Instructions button
+    # Main menu buttons with two redirect URL buttons and the Instructions button
     main_menu_buttons = [
+        [Button.url("Redirect URL 1", "https://example.com/1")],
+        [Button.url("Redirect URL 2", "https://example.com/2")],
         [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
     ]
-    back_button = Button.inline("<< Back To Main Menu", b"search_result")
+
+    back_button = Button.inline("Enjoy from Bot! 😇🤞 !از ربات لذت ببرید", b"search_result")
 
     setting_button = [
         [Button.inline("Core", b"setting/core")],
         [Button.inline("Quality", b"setting/quality")],
         [Button.inline("TweetCapture", b"setting/TweetCapture")],
         [Button.inline("Subscription", b"setting/subscription")],
-        [back_button]
+        [back_button],
     ]
 
     back_button_to_setting = Button.inline("<< Back", b"setting/back")
