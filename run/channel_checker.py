@@ -15,9 +15,9 @@ async def is_user_in_channel(user_id, channel_usernames=None):
             channel = await BotState.BOT_CLIENT.get_entity(channel_username)
             participants = await BotState.BOT_CLIENT(GetParticipantsRequest(
                 channel,
-                ChannelParticipantsSearch(''),  # Search query, empty for all participants
-                offset=0,  # Offset for fetching participants
-                limit=200,  # Fetch participants in batches of 200
+                ChannelParticipantsSearch(''),
+                offset=0,
+                limit=200,
                 hash=0
             ))
             if not any(participant.id == user_id for participant in participants.users):
@@ -56,7 +56,7 @@ async def respond_based_on_channel_membership(event, message_if_in_channels: str
 
     if channels_user_is_not_in and (user_id not in BotState.ADMIN_USER_IDS):
         join_channel_buttons = [[join_channel_button(channel)] for channel in channels_user_is_not_in]
-        join_channel_buttons.append([optional_redirect_button()])  # Add the optional button here
+        join_channel_buttons.append([optional_redirect_button()])
         join_channel_buttons.append(Buttons.continue_button)
         await BotMessageHandler.send_message(event,
                                              f"""Hey {sender_name}!👋 \n{BotMessageHandler.JOIN_CHANNEL_MESSAGE}""",
@@ -85,3 +85,16 @@ async def handle_continue_in_membership_message(event):
         await event.delete()
         await respond_based_on_channel_membership(event, f"""Hey {sender_name}!👋 \n{BotMessageHandler.start_message}""",
                                                   buttons=Buttons.main_menu_buttons)
+
+
+async def handle_join_button_click(event, channel_username):
+    """
+    Handle the event when the user clicks the 'Join' button.
+    """
+    user_id = event.sender_id
+    channels_user_is_not_in = await is_user_in_channel(user_id, [channel_username])
+
+    if channel_username in channels_user_is_not_in:
+        await event.answer("❌ You have not joined the required channel. Please join first.", alert=True)
+    else:
+        await event.answer("✅ You have successfully joined the channel.", alert=True)
