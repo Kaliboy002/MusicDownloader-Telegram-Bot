@@ -1,4 +1,6 @@
 from utils.database import db
+from telethon import events
+
 
 class BroadcastManager:
 
@@ -6,7 +8,7 @@ class BroadcastManager:
     async def broadcast_to_sub_members(client, content, content_type="text", button=None):
         """
         Sends a message or media to all users in the broadcast list.
-        
+
         Args:
             client: The Telegram client instance.
             content: The content to be sent (text, file path, etc.).
@@ -18,11 +20,7 @@ class BroadcastManager:
             try:
                 if content_type == "text":
                     await client.send_message(user_id, content, buttons=button)
-                elif content_type == "photo":
-                    await client.send_file(user_id, file=content, caption=button)
-                elif content_type == "video":
-                    await client.send_file(user_id, file=content, caption=button)
-                elif content_type == "document":
+                elif content_type in ["photo", "video", "document"]:
                     await client.send_file(user_id, file=content, caption=button)
                 else:
                     print(f"Unsupported content type: {content_type}")
@@ -33,7 +31,7 @@ class BroadcastManager:
     async def broadcast_to_temp_members(client, content, content_type="text"):
         """
         Sends a message or media to all temporary subscribed users.
-        
+
         Args:
             client: The Telegram client instance.
             content: The content to be sent (text, file path, etc.).
@@ -106,3 +104,19 @@ class BroadcastManager:
         Adds a user to the temporary broadcast list.
         """
         await db.add_user_to_temp(user_id)
+
+
+# Example of a broadcasting handler
+@client.on(events.CallbackQuery(data=b'broadcast'))
+async def handle_broadcast(event):
+    try:
+        content = "This is a test broadcast message!"  # Replace with your content
+        content_type = "text"  # Change based on the content: 'text', 'photo', 'video', 'document'
+
+        # Broadcast to temporary subscribed members
+        await BroadcastManager.broadcast_to_temp_members(client, content, content_type)
+
+        await event.reply("Broadcast sent successfully!")
+    except Exception as e:
+        print(f"Broadcast Failed: {str(e)}")
+        await event.reply(f"Broadcast Failed: {str(e)}")
