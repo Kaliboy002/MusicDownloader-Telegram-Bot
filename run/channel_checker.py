@@ -42,6 +42,13 @@ def join_channel_button(channel_username):
     return Button.url("𓆩 𝙆𝙖𝙡𝙞 𝙇𝙞𝙣𝙪𝙭 𓆪", f"https://t.me/{channel_username}")
 
 
+def optional_redirect_button():
+    """
+    Returns an optional Button object that redirects to a specified URL.
+    """
+    return Button.url("hsjwjwjjwe", "https://example.com")  # Replace with your desired URL
+
+
 async def respond_based_on_channel_membership(event, message_if_in_channels: str = None, buttons: str = None,
                                               channels_user_is_not_in: list = None):
     sender_name = event.sender.first_name
@@ -53,6 +60,7 @@ async def respond_based_on_channel_membership(event, message_if_in_channels: str
 
     if channels_user_is_not_in != [] and (user_id not in BotState.ADMIN_USER_IDS):
         join_channel_buttons = [[join_channel_button(channel)] for channel in channels_user_is_not_in]
+        join_channel_buttons.append([optional_redirect_button()])  # Add the optional button here
         join_channel_buttons.append(Buttons.continue_button)
         await BotMessageHandler.send_message(event,
                                              f"""Hey {sender_name}!👋 \n{BotMessageHandler.JOIN_CHANNEL_MESSAGE}""",
@@ -68,6 +76,7 @@ async def handle_continue_in_membership_message(event):
     channels_user_is_not_in = await is_user_in_channel(user_id)
     if channels_user_is_not_in != []:
         join_channel_buttons = [[join_channel_button(channel)] for channel in channels_user_is_not_in]
+        join_channel_buttons.append([optional_redirect_button()])  # Add the optional button here
         join_channel_buttons.append(Buttons.continue_button)
         await BotMessageHandler.edit_message(event,
                                              f"""Hey {sender_name}!👋 \n{BotMessageHandler.JOIN_CHANNEL_MESSAGE}""",
