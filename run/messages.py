@@ -61,8 +61,11 @@ Questions? Ask @adibnikjou
     core_selection_message = """🎵 Choose Your Preferred Download Core 🎵
 
 """
-    JOIN_CHANNEL_MESSAGE = """It seems you are not a member of our channel yet.
-Please join to continue."""
+    JOIN_CHANNEL_MESSAGE = """⚠️ **To use this bot, you must first join our Telegram channels**.
+Once you've joined, click on |** Joined** | button to proceed 🔐
+┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+⚠️** برای استفاده از این ربات، نخست شما باید به کانال‌ های زیر عضو گردید **
+پس از پیوستن به کانال روی دکمه | **عضو شدم** | را کلیک نماید 🔐"""
 
     search_playlist_message = """The playlist contains these songs:"""
 
