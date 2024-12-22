@@ -41,11 +41,31 @@ class BotState:
             return BotState.user_states[user_id]
 
     @staticmethod
-    async def set_user_state(user_id, key, value):
+    async def get_admin_message_to_send(user_id):
         user_state = await BotState.get_user_state(user_id)
-        setattr(user_state, key, value)
+        return user_state.admin_message_to_send
 
     @staticmethod
-    async def get_user_state_property(user_id, key):
+    async def get_admin_broadcast(user_id):
         user_state = await BotState.get_user_state(user_id)
-        return getattr(user_state, key, None)
+        return user_state.admin_broadcast
+
+    @staticmethod
+    async def get_send_to_specified_flag(user_id):
+        user_state = await BotState.get_user_state(user_id)
+        return user_state.send_to_specified_flag
+
+    @staticmethod
+    async def set_admin_message_to_send(user_id, message):
+        user_state = await BotState.get_user_state(user_id)
+        user_state.admin_message_to_send = message
+
+    @staticmethod
+    async def set_admin_broadcast(user_id, value):
+        user_state = await BotState.get_user_state(user_id)
+        user_state.admin_broadcast = value
+
+    @staticmethod
+    async def set_send_to_specified_flag(user_id, value):
+        user_state = await BotState.get_user_state(user_id)
+        user_state.send_to_specified_flag = value
