@@ -2,9 +2,10 @@ from run import Button
 
 
 class Buttons:
-    # Main menu buttons without the Instructions button
-    main_menu_buttons = []
-
+    # Only keeping the Instructions button
+    main_menu_buttons = [
+        [Button.inline("Instructions", b"instructions")],
+    ]
     back_button = Button.inline("<< Back To Main Menu", b"back")
 
     setting_button = [
