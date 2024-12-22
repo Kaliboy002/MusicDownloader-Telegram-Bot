@@ -44,6 +44,7 @@ def join_channel_button(channel_username):
 
 async def respond_based_on_channel_membership(event, message_if_in_channels: str = None, buttons: str = None,
                                               channels_user_is_not_in: list = None):
+    sender_name = event.sender.first_name
     user_id = event.sender_id
     buttons_if_in_channel = buttons
 
@@ -62,6 +63,7 @@ async def respond_based_on_channel_membership(event, message_if_in_channels: str
 
 
 async def handle_continue_in_membership_message(event):
+    sender_name = event.sender.first_name
     user_id = event.sender_id
     channels_user_is_not_in = await is_user_in_channel(user_id)
     if channels_user_is_not_in != []:
