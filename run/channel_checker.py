@@ -39,7 +39,7 @@ def join_channel_button(channel_username):
     """
     Returns a Button object that, when clicked, directs users to join the specified channel.
     """
-    return Button.url("Join Channel | عضو کانال ⚡", f"https://t.me/{channel_username}")
+    return Button.url("𓆩 𝙆𝙖𝙡𝙞 𝙇𝙞𝙣𝙪𝙭 𓆪", f"https://t.me/{channel_username}")
 
 
 async def respond_based_on_channel_membership(event, message_if_in_channels: str = None, buttons: str = None,
