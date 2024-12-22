@@ -94,13 +94,17 @@ class Bot:
         cls.admins_buttons = Buttons.admins_buttons
         cls.broadcast_options_buttons = Buttons.broadcast_options_buttons
 
-    @classmethod
-async def initialize_action_queries(cls):
-    # Mapping button actions to functions
-    cls.button_actions = {
-        b"membership/continue": lambda e: asyncio.create_task(handle_continue_in_membership_message(e)),
-        b"instructions": lambda e: asyncio.create_task(
-            BotMessageHandler.edit_message(e, Bot.instruction_message, buttons=Bot.back_button)),
+classmethod
+    async def initialize_action_queries(cls):
+        # Mapping button actions to functions
+        cls.button_actions = {
+            b"membership/continue": lambda e: asyncio.create_task(handle_continue_in_membership_message(e)),
+            b"instructions": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_message(e, Bot.instruction_message, buttons=Bot.back_button)),
+            b"back": lambda e: asyncio.create_task(
+                BotMessageHandler.edit_message(e, f"Hey {e.sender.first_name}!👋\n {Bot.start_message}",
+                                               buttons=Bot.main_menu_buttons)),
+
         b"back": lambda e: asyncio.create_task(
             BotMessageHandler.edit_message(e, f"{Bot.start_message}", buttons=Bot.main_menu_buttons)),
     }        b"setting": lambda e: asyncio.create_task(
