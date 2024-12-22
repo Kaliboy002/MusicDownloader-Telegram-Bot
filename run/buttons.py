@@ -6,6 +6,8 @@ class Buttons:
     main_menu_buttons = [
         [Button.inline("Other Bots 🤖 ربات های دیکر", b"instructions")],
     ]
+        back_button = Button.inline("<< Back To Main Menu", b"back")
+
     setting_button = [
         [Button.inline("Core", b"setting/core")],
         [Button.inline("Quality", b"setting/quality")],
